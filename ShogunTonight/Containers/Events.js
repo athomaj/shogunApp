@@ -5,7 +5,6 @@
  */
 
 import React, { Component } from 'react';
-import {SERVER_IP, SERVER_PORT} from '../config/config.js'
 import {
   Platform,
   StyleSheet,
@@ -13,8 +12,7 @@ import {
   View,
   AppRegistry,
   ListView,
-  TouchableOpacity,
-  AsyncStorage
+  TouchableOpacity
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -29,44 +27,27 @@ export default class Events extends Component<{}> {
       ds: ds
     }
 
-    try {
-      const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
-        if (result) {
-          const user = JSON.parse(result);
-          fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/events?userId=${user._id}`, {method: 'get',
-            headers: {
-              'Accept': 'application/json, text/plain, */*',
-              'Content-Type': 'application/json'
-            }})
-          .then(
-            response => response.json(),
-            error => console.log('An error occured.', error)
-          )
-          .then(json => {
-            this.state.dataSource = ds.cloneWithRows(json.events);
-            this.forceUpdate();
-            console.log(json.events);
-          })
-        }
-    });
-    } catch (error) {
-      console.log(error);
-    }
+    fetch(`http://10.20.86.124:3000/api/events?userId=${'59fd9a2c76194a1447a9bdcd'}`, {method: 'get',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }})
+    .then(
+      response => response.json(),
+      error => console.log('An error occured.', error)
+    )
+    .then(json => {
+      this.state.dataSource = ds.cloneWithRows(json.events);
+      this.forceUpdate();
+      console.log(json.events);
+    })
   }
 
   componentWillMount() {
 
   }
 
-  _onPressButton() {
-
-    }
-
-    componentDidUpdate() {
-    }
-
   render() {
-    console.log('here');
     return (
       <View style={{flex: 1}}>
         <ListView

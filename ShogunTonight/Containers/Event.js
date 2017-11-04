@@ -12,7 +12,7 @@ import {
   View,
   AppRegistry,
   TouchableOpacity,
-  Image
+  Image,Dimensions
 } from 'react-native';
 
 const uuidv1 = require('uuid/v1');
@@ -36,6 +36,7 @@ var options = {
 };
 
 var globalthis;
+const width = Dimensions.get('window').width
 
 export default class Event extends Component<{}> {
   constructor(props) {
@@ -48,7 +49,15 @@ export default class Event extends Component<{}> {
     }
     globalthis = this;
     this.onImageClicked = this.onImageClicked.bind(this)
+<<<<<<< HEAD
     console.log(this.props);
+=======
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: ds.cloneWithRows(props.eventObj.images),
+      ds: ds
+    }
+>>>>>>> 78233c914b98130781faed8e6347b63b0499b983
   }
 
   static renderRightButton = (props) => {
@@ -109,6 +118,12 @@ export default class Event extends Component<{}> {
         });
       }
 
+      renderRow (image) {
+        return <View style={styles.card}>
+           <Image source={image.url}/>
+         </View>
+       }
+
   render() {
     var dateFormat = require('dateformat');
     var startDate = this.state.startDate;
@@ -117,12 +132,32 @@ export default class Event extends Component<{}> {
     var dispEndDate = dateFormat(endDate, "dddd, mmmm dS, yyyy, h:MM:ss TT");
     return (
       <View style={{marginTop: 50, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Information :</Text>
+
       <Text>{this.state.description}</Text>
       <Text>{dispStartDate}</Text>
       <Text>{dispEndDate}</Text>
+      <ListView
+        contentContainerStyle={styles.listView}
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow.bind(this)}
+      />
      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  listView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  card: {
+    backgroundColor: 'red',
+    width: (width / 2) - 15,
+    height: 300,
+    marginLeft: 10,
+    marginTop: 10
+  }
+});
+
 AppRegistry.registerComponent('Event', () => Event);
