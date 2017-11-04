@@ -129,7 +129,7 @@ export default class Event extends Component<{}> {
       <View style={{marginTop: 30, justifyContent: 'center', alignItems: 'center'}}>
       <View style={{backgroundColor:'rgba(0,0,0,0.5)', borderRadius: 20, padding: 15, marginBottom: 20}}>
       <Text style={styles.text}>{description}</Text>
-      <Text style={styles.text}>{dispStartDate}</Text>
+      <Text style={[styles.text, {marginTop: 10}]}>{dispStartDate}</Text>
       <Text style={styles.text}>{dispEndDate}</Text>
       </View>
       <ListView
