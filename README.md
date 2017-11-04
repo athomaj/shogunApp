@@ -1,4 +1,6 @@
 # shogunApp
+by sophie dumont(sophie.dumont@epitech.eu) and julien athomas(julien.athomas@epitech.eu)
+We haven't done the mobile hybrid module.
 
 A react native project with:
 ```
