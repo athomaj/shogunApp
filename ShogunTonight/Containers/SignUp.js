@@ -13,14 +13,45 @@ import {
   AppRegistry,
   TextInput,
   TouchableOpacity,
-  Image, Alert, Button, ImageBackground
+  Image, Alert, Button, ImageBackground, AsyncStorage
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
 
 export default class SignUp extends Component<{}> {
-  _onPressButton() {
-   Actions.events();
+  constructor() {
+    super();
 
+    this.state = {
+      username: ''
+    }
+    try {
+      const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
+        const user = JSON.parse(result);
+        Actions.events();
+      });
+    } catch (error) {
+      // Error retrieving data
+    }
+  }
+  _onPressButton() {
+    fetch(`http://localhost:3000/api/users`, {method: 'post',
+    headers: {
+      'Accept': 'application/json, text/plain, */*',
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({username: this.state.username})})
+  .then(
+    response => response.json(),
+    error => console.log('An error occured.', error)
+  )
+  .then(json => {
+    try {
+      AsyncStorage.setItem('@shogunStore:user', JSON.stringify(json.user));
+    } catch (error) {
+      console.error(error);
+    }
+    Actions.events();
+  })
  }
   render() {
     return (
@@ -39,10 +70,12 @@ export default class SignUp extends Component<{}> {
                         // onSubmitEditing={() => this.passwordInput.focus()}
                          autoCorrect={false}
                          returnKeyType="next"
+                         onChangeText={(username) => this.setState({username})}
+                         value={this.state.username}
                          placeholder='Choose a username'
                          placeholderTextColor='rgba(225,225,225,0.7)'/>
          <TouchableOpacity style={styles.buttonContainer}
-                        onPress={this._onPressButton}>
+                        onPress={this._onPressButton.bind(this)}>
                         <Text  style={styles.buttonText}>Sign In</Text>
           </TouchableOpacity>
 

@@ -16,6 +16,8 @@ import {
   Image
 } from 'react-native';
 
+import firebase from 'react-native-firebase';
+
 var ImagePicker = require('react-native-image-picker');
 
 // More info on all the options is below in the README...just some common use cases shown here
@@ -59,6 +61,20 @@ export default class Profile extends Component<{}> {
       }
       else {
         let source = { uri: response.uri };
+
+        firebase.storage().ref('profileImages/' + response.fileName).putFile(response.uri, {
+              contentType: 'image/jpeg',
+            }).on('state_changed',
+                (progress) => {
+                  console.log(progress);
+                },
+                (error) => {
+                  console.debug(error);
+                },
+                (uploadedFile) => {
+                    console.debug(uploadedFile);
+                    
+                });
 
         this.setState({
           profileImg: source

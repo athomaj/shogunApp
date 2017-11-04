@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>AD_UNIT_ID_FOR_BANNER_TEST</key>
+	<string>ca-app-pub-3940256099942544/2934735716</string>
+	<key>AD_UNIT_ID_FOR_INTERSTITIAL_TEST</key>
+	<string>ca-app-pub-3940256099942544/4411468910</string>
+	<key>CLIENT_ID</key>
+	<string>569457579737-rb8ps21bae0ihia324qarf2le3rnjnlj.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.569457579737-rb8ps21bae0ihia324qarf2le3rnjnlj</string>
+	<key>API_KEY</key>
+	<string>AIzaSyCbyQIGxdvygMO8ZL76zCat3PIP21sLU4k</string>
+	<key>GCM_SENDER_ID</key>
+	<string>569457579737</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>org.reactjs.native.example.ShogunTonight</string>
+	<key>PROJECT_ID</key>
+	<string>shogun-adb49</string>
+	<key>STORAGE_BUCKET</key>
+	<string>shogun-adb49.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<true></true>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<false></false>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:569457579737:ios:bc789bc68cc59a1e</string>
+	<key>DATABASE_URL</key>
+	<string>https://shogun-adb49.firebaseio.com</string>
+</dict>
+</plist>
