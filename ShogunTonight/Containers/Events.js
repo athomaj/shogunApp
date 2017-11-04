@@ -17,6 +17,7 @@ import {
   AsyncStorage
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
 
 export default class Events extends Component<{}> {
   constructor() {
@@ -57,8 +58,12 @@ export default class Events extends Component<{}> {
 
   }
 
-  componentDidUpdate() {
-  }
+  _onPressButton() {
+
+    }
+
+    componentDidUpdate() {
+    }
 
   render() {
     console.log('here');
@@ -67,7 +72,7 @@ export default class Events extends Component<{}> {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) => {return (
-            <TouchableOpacity onPress={() => console.log(rowData)}>
+            <TouchableOpacity onPress={() => Actions.event({eventObj: rowData, title: rowData.name})}>
               <View style={{backgroundColor: 'blue', height: 30}}>
                 <Text>{rowData.name}</Text>
               </View>
