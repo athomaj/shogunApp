@@ -42,10 +42,7 @@ const width = Dimensions.get('window').width
 export default class Event extends Component<{}> {
   constructor(props) {
     super(props);
-<<<<<<< HEAD
 
-=======
->>>>>>> 22d3455930c74a81052bc95ec244ab05861dfbe7
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       startDate: props.eventObj.startDate,
