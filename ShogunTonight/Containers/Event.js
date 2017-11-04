@@ -12,7 +12,7 @@ import {
   View,
   AppRegistry,
   TouchableOpacity,
-  Image,Dimensions
+  Image,Dimensions,ListView
 } from 'react-native';
 
 const uuidv1 = require('uuid/v1');
@@ -41,19 +41,17 @@ const width = Dimensions.get('window').width
 export default class Event extends Component<{}> {
   constructor(props) {
     super(props);
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
 
     this.state = {
       startDate: props.eventObj.startDate,
       endDate: props.eventObj.endDate,
       description: props.eventObj.description,
-    }
-    globalthis = this;
-    this.onImageClicked = this.onImageClicked.bind(this)
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
       dataSource: ds.cloneWithRows(props.eventObj.images),
       ds: ds
     }
+    globalthis = this;
+    this.onImageClicked = this.onImageClicked.bind(this)
   }
 
   static renderRightButton = (props) => {
@@ -124,14 +122,16 @@ export default class Event extends Component<{}> {
     var dateFormat = require('dateformat');
     var startDate = this.state.startDate;
     var endDate = this.state.endDate;
+    var description = this.state.description;
     var dispStartDate = dateFormat(startDate, "dddd, mmmm dS, yyyy, h:MM:ss TT");
     var dispEndDate = dateFormat(endDate, "dddd, mmmm dS, yyyy, h:MM:ss TT");
     return (
-      <View style={{marginTop: 50, justifyContent: 'center', alignItems: 'center'}}>
-
-      <Text>{this.state.description}</Text>
-      <Text>{dispStartDate}</Text>
-      <Text>{dispEndDate}</Text>
+      <View style={{marginTop: 30, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{backgroundColor:'rgba(0,0,0,0.5)', borderRadius: 20, padding: 15, marginBottom: 20}}>
+      <Text style={styles.text}>{description}</Text>
+      <Text style={styles.text}>{dispStartDate}</Text>
+      <Text style={styles.text}>{dispEndDate}</Text>
+      </View>
       <ListView
         contentContainerStyle={styles.listView}
         dataSource={this.state.dataSource}
@@ -153,6 +153,9 @@ const styles = StyleSheet.create({
     height: 300,
     marginLeft: 10,
     marginTop: 10
+  },
+  text:{
+    color: '#fff'
   }
 });
 
