@@ -72,9 +72,9 @@ export default class Events extends Component<{}> {
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) => {return (
-            <TouchableOpacity onPress={() => Actions.event({eventObj: rowData, title: rowData.name})}>
-              <View style={{backgroundColor: 'blue', height: 30}}>
-                <Text>{rowData.name}</Text>
+            <TouchableOpacity  style= {styles.container} onPress={() => Actions.event({eventObj: rowData, title: rowData.name})}>
+              <View style={{height: 30}}>
+                <Text style= {styles.text}>{rowData.name}</Text>
               </View>
             </TouchableOpacity>
           )}}
@@ -83,4 +83,17 @@ export default class Events extends Component<{}> {
     );
   }
 }
+
+const styles = StyleSheet.create({
+container: {
+      padding: 10,
+      backgroundColor: 'white',
+      marginTop: 3,
+      backgroundColor: 'rgba(0,0,0,0.5)',
+      alignItems: 'center',
+   },
+   text: {
+      color: '#fff'
+   }
+});
 AppRegistry.registerComponent('Events', () => Events);
