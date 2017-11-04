@@ -12,7 +12,7 @@ import {
   View,
   AppRegistry,
   TouchableOpacity,
-  Image
+  Image,Dimensions
 } from 'react-native';
 
 import { moment } from 'moment';
@@ -33,6 +33,7 @@ var options = {
 };
 
 var globalthis;
+const width = Dimensions.get('window').width
 
 export default class Event extends Component<{}> {
   constructor(props) {
@@ -45,6 +46,11 @@ export default class Event extends Component<{}> {
     }
     globalthis = this;
     this.onImageClicked = this.onImageClicked.bind(this)
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
+    this.state = {
+      dataSource: ds.cloneWithRows(props.eventObj.images),
+      ds: ds
+    }
   }
 
   static renderRightButton = (props) => {
@@ -86,11 +92,17 @@ console.log(props);
                   },
                   (uploadedFile) => {
                       console.debug(uploadedFile);
-                      
+
                   });
           }
         });
       }
+
+      renderRow (image) {
+        return <View style={styles.card}>
+           <Image source={image.url}/>
+         </View>
+       }
 
   render() {
     var dateFormat = require('dateformat');
@@ -100,12 +112,32 @@ console.log(props);
     var dispEndDate = dateFormat(endDate, "dddd, mmmm dS, yyyy, h:MM:ss TT");
     return (
       <View style={{marginTop: 50, justifyContent: 'center', alignItems: 'center'}}>
-      <Text>Information :</Text>
+
       <Text>{this.state.description}</Text>
       <Text>{dispStartDate}</Text>
       <Text>{dispEndDate}</Text>
+      <ListView
+        contentContainerStyle={styles.listView}
+        dataSource={this.state.dataSource}
+        renderRow={this.renderRow.bind(this)}
+      />
      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+  listView: {
+    flexDirection: 'row',
+    flexWrap: 'wrap'
+  },
+  card: {
+    backgroundColor: 'red',
+    width: (width / 2) - 15,
+    height: 300,
+    marginLeft: 10,
+    marginTop: 10
+  }
+});
+
 AppRegistry.registerComponent('Event', () => Event);
