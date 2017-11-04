@@ -49,15 +49,11 @@ export default class Event extends Component<{}> {
     }
     globalthis = this;
     this.onImageClicked = this.onImageClicked.bind(this)
-<<<<<<< HEAD
-    console.log(this.props);
-=======
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows(props.eventObj.images),
       ds: ds
     }
->>>>>>> 78233c914b98130781faed8e6347b63b0499b983
   }
 
   static renderRightButton = (props) => {
