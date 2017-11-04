@@ -12,7 +12,8 @@ import {
   View,
   AppRegistry,
   TouchableOpacity,
-  Image,Dimensions
+  Image,Dimensions,
+  ListView
 } from 'react-native';
 
 const uuidv1 = require('uuid/v1');
@@ -42,18 +43,16 @@ export default class Event extends Component<{}> {
   constructor(props) {
     super(props);
 
+    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       startDate: props.eventObj.startDate,
       endDate: props.eventObj.endDate,
       description: props.eventObj.description,
-    }
-    globalthis = this;
-    this.onImageClicked = this.onImageClicked.bind(this)
-    const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
-    this.state = {
       dataSource: ds.cloneWithRows(props.eventObj.images),
       ds: ds
     }
+    globalthis = this;
+    this.onImageClicked = this.onImageClicked.bind(this)
   }
 
   static renderRightButton = (props) => {
@@ -115,8 +114,9 @@ export default class Event extends Component<{}> {
       }
 
       renderRow (image) {
+        console.log(image);
         return <View style={styles.card}>
-           <Image source={image.url}/>
+           <Image style={{flex: 1}} source={{uri: image.url}}/>
          </View>
        }
 
@@ -148,7 +148,6 @@ const styles = StyleSheet.create({
     flexWrap: 'wrap'
   },
   card: {
-    backgroundColor: 'red',
     width: (width / 2) - 15,
     height: 300,
     marginLeft: 10,
