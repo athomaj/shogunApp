@@ -11,12 +11,17 @@ import {
   Text,
   View,
   AppRegistry,
-  Actions,
   TouchableOpacity,
   Image,
-  TextInput
+  TextInput,
+  AsyncStorage,
+  Alert,
+  Dimensions
 } from 'react-native';
 
+import {Actions} from 'react-native-router-flux';
+import Spinner from 'react-native-loading-spinner-overlay';
+import {SERVER_IP, SERVER_PORT} from '../config/config.js'
 import firebase from 'react-native-firebase';
 
 var ImagePicker = require('react-native-image-picker');
@@ -33,22 +38,108 @@ var options = {
   }
 };
 
+const width = Dimensions.get('window').width
 
 export default class Profile extends Component<{}> {
-  _onPressButton() {
-   Actions.events();
-
-  }
 
   constructor() {
     super();
     this.state = {
-      profileImg: require('../img/new-user-image-default.png')
+      profileImg: '',
+      profileImgUri: require('../img/new_user_image_default.png'),
+      profileImgToUpdate: false,
+      newUserName: '',
+      username: '',
+      saving: false
     };
+
+    try {
+      const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
+        console.log(result);
+        if (result) {
+          const user = JSON.parse(result);
+          console.log(user);
+          if (user.profileImage && user.profileImage.url) {
+            this.state.profileImgUri = {uri: user.profileImage.url};
+            console.log('HERE');
+          }
+          this.setState({username: user.username});
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  _onPressButton() {
+     try {
+       const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
+         console.log(result);
+         if (result) {
+           this.setState({saving: true});
+           const user = JSON.parse(result);
+           const body = {};
+
+           if (this.state.newUserName) {
+             body.username = this.state.newUserName;
+           }
+           if (this.state.profileImgToUpdate == true) {
+             firebase.storage().ref('profileImages/' + this.state.profileImg.fileName).putFile(this.state.profileImg.uri, {
+                 contentType: 'image/jpeg',
+               }).on('state_changed',
+                   (progress) => {
+                     console.log(progress);
+                   },
+                   (error) => {
+                     console.debug(error);
+                   },
+                   (uploadedFile) => {
+                       console.debug(uploadedFile);
+                       body.profileImg = uploadedFile.downloadURL;
+                       this.updateUser(user, body);
+                   });
+           } else {
+             this.updateUser(user, body)
+           }
+         }
+       });
+     } catch (error) {
+       // Error retrieving data
+     }
+  }
+
+  updateUser(user, body) {
+    fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/users/${user._id}`, {method: 'patch',
+      headers: {
+        'Accept': 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(body)})
+    .then(
+      response => response.json(),
+      error => console.log('An error occured.', error)
+    )
+    .then(json => {
+      this.setState({saving: false});
+      try {
+        AsyncStorage.setItem('@shogunStore:user', JSON.stringify(json.user));
+        // Alert.alert(
+        //   "Profile",
+        //   'Your Profile has been updated',
+        //   [
+        //     {text: 'Ok', onPress: () => {Actions.pop()}, style: 'cancel'}
+        //   ],
+        //   { cancelable: false }
+        // )
+      } catch (error) {
+        console.error(error);
+      }
+    })
+
   }
 
   onImageClicked() {
-    ImagePicker.showImagePicker(null, (response) => {
+    ImagePicker.showImagePicker({maxWidth: 300, maxHeight: 600}, (response) => {
       console.log('Response = ', response);
 
       if (response.didCancel) {
@@ -62,23 +153,10 @@ export default class Profile extends Component<{}> {
       }
       else {
         let source = { uri: response.uri };
-
-        firebase.storage().ref('profileImages/' + response.fileName).putFile(response.uri, {
-              contentType: 'image/jpeg',
-            }).on('state_changed',
-                (progress) => {
-                  console.log(progress);
-                },
-                (error) => {
-                  console.debug(error);
-                },
-                (uploadedFile) => {
-                    console.debug(uploadedFile);
-                    
-                });
-
         this.setState({
-          profileImg: source
+          profileImg: response,
+          profileImgUri: source,
+          profileImgToUpdate: true
         });
       }
     });
@@ -87,10 +165,11 @@ export default class Profile extends Component<{}> {
   render() {
     return (
       <View style={{flex:1, backgroundColor: 'rgba(0,0,0,0.5)'}}>
+        <Spinner visible={this.state.saving} textContent={"Saving..."} textStyle={{color: '#FFF'}} />
         <View style={{marginTop: 60, justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity onPress={this.onImageClicked.bind(this)}>
-          {this.state.profileImg != null &&
-            <Image style={{borderRadius:75, width: 150, height: 150}} source={this.state.profileImg} />
+          {this.state.profileImgUri != null &&
+            <Image style={{borderRadius:75, width: 150, height: 150}} source={this.state.profileImgUri} />
           }
          </TouchableOpacity>
          <TextInput style = {styles.input}
@@ -98,10 +177,12 @@ export default class Profile extends Component<{}> {
                        // onSubmitEditing={() => this.passwordInput.focus()}
                         autoCorrect={false}
                         returnKeyType="next"
-                        placeholder='Choose a username'
+                        placeholder={this.state.username}
+                        onChangeText={(newUserName) => this.setState({newUserName})}
+                        value={this.state.newUserName}
                         placeholderTextColor='rgba(225,225,225,0.7)'/>
         <TouchableOpacity style={styles.buttonContainer}
-                       onPress={this._onPressButton}>
+                       onPress={this._onPressButton.bind(this)}>
                        <Text  style={styles.buttonText}>Save</Text>
          </TouchableOpacity>
         </View>
@@ -118,6 +199,7 @@ const styles = StyleSheet.create({
         height: 40,
       backgroundColor: 'white',
         marginBottom: 10,
+        width: width / 2,
         padding: 10,
         marginTop:25,
         backgroundColor: 'rgba(225,225,225,0.2)',

@@ -13,9 +13,13 @@ import {
   AppRegistry,
   TextInput,
   TouchableOpacity,
-  Image, Alert, Button, ImageBackground, AsyncStorage
+  Image, Alert, Button, ImageBackground, AsyncStorage,
+  Dimensions
 } from 'react-native';
 import { Actions } from 'react-native-router-flux';
+import {SERVER_IP, SERVER_PORT} from '../config/config.js'
+
+const width = Dimensions.get('window').width
 
 export default class SignUp extends Component<{}> {
   constructor() {
@@ -26,15 +30,18 @@ export default class SignUp extends Component<{}> {
     }
     try {
       const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
-        const user = JSON.parse(result);
-        Actions.events();
+        console.log(result);
+        if (result) {
+          const user = JSON.parse(result);
+          Actions.events();
+        }
       });
     } catch (error) {
       // Error retrieving data
     }
   }
   _onPressButton() {
-    fetch(`http://localhost:3000/api/users`, {method: 'post',
+    fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/users`, {method: 'post',
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'
@@ -94,6 +101,7 @@ const styles = StyleSheet.create({
         height: 40,
         backgroundColor: 'rgba(225,225,225,0.2)',
         marginBottom: 10,
+        width: width / 2,
         padding: 10,
         color: '#fff'
     },

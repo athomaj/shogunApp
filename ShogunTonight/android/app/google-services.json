@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "569457579737",
+    "firebase_url": "https://shogun-adb49.firebaseio.com",
+    "project_id": "shogun-adb49",
+    "storage_bucket": "shogun-adb49.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:569457579737:android:9aafda16dcafb23b",
+        "android_client_info": {
+          "package_name": "com.shoguntonight"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "569457579737-a0isevebq1ih5vgb5e9hnlt65ivmp2vc.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB3RB5WfLtN3zMV_Sxvsd9KNaDN_OzWC1o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

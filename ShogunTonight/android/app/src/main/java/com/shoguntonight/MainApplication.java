@@ -4,6 +4,9 @@ import android.app.Application;
 
 import com.facebook.react.ReactApplication;
 import io.invertase.firebase.RNFirebasePackage;
+import io.invertase.firebase.messaging.RNFirebaseMessagingPackage;
+import io.invertase.firebase.storage.RNFirebaseStoragePackage;
+
 import com.imagepicker.ImagePickerPackage;
 import com.reactnative.ivpusic.imagepicker.PickerPackage;
 import com.lwansbrough.RCTCamera.RCTCameraPackage;
@@ -30,7 +33,9 @@ public class MainApplication extends Application implements ReactApplication {
             new RNFirebasePackage(),
             new ImagePickerPackage(),
             new PickerPackage(),
-            new RCTCameraPackage()
+            new RCTCameraPackage(),
+              new RNFirebaseStoragePackage(),
+              new RNFirebaseMessagingPackage()
       );
     }
 
