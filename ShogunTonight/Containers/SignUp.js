@@ -27,14 +27,15 @@ export default class SignUp extends Component<{}> {
     try {
       const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
         const user = JSON.parse(result);
-        Actions.events();
+        if (user)
+          Actions.events();
       });
     } catch (error) {
       // Error retrieving data
     }
   }
   _onPressButton() {
-    fetch(`http://localhost:3000/api/users`, {method: 'post',
+    fetch(`http://10.20.86.124:3000/api/users`, {method: 'post',
     headers: {
       'Accept': 'application/json, text/plain, */*',
       'Content-Type': 'application/json'

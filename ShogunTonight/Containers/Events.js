@@ -15,6 +15,7 @@ import {
   TouchableOpacity
 } from 'react-native';
 
+import { Actions } from 'react-native-router-flux';
 
 export default class Events extends Component<{}> {
   constructor() {
@@ -26,7 +27,7 @@ export default class Events extends Component<{}> {
       ds: ds
     }
 
-    fetch(`http://localhost:3000/api/events?userId=${'59fd9a2c76194a1447a9bdcd'}`, {method: 'get',
+    fetch(`http://10.20.86.124:3000/api/events?userId=${'59fd9a2c76194a1447a9bdcd'}`, {method: 'get',
       headers: {
         'Accept': 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
@@ -46,13 +47,17 @@ export default class Events extends Component<{}> {
 
   }
 
+  _onPressButton() {
+
+    }
+
   render() {
     return (
       <View style={{flex: 1}}>
         <ListView
           dataSource={this.state.dataSource}
           renderRow={(rowData) => {return (
-            <TouchableOpacity onPress={() => console.log(rowData)}>
+            <TouchableOpacity onPress={() => Actions.event({eventObj: rowData, title: rowData.name})}>
               <View style={{backgroundColor: 'blue', height: 30}}>
                 <Text>{rowData.name}</Text>
               </View>
