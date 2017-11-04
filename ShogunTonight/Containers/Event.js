@@ -68,32 +68,24 @@ export default class Event extends Component<{}> {
       onImageClicked() {
         const that = this;
         ImagePicker.showImagePicker({maxWidth: 300, maxHeight: 600}, (response) => {
-          console.log('Response = ', response);
 
           if (response.didCancel) {
-            console.log('User cancelled image picker');
           }
           else if (response.error) {
-            console.log('ImagePicker Error: ', response.error);
           }
           else if (response.customButton) {
-            console.log('User tapped custom button: ', response.customButton);
           }
           else {
             let source = { uri: response.uri };
 
-            console.log(response);
             firebase.storage().ref('eventImages/' + uuidv1()).putFile(response.uri, {
                 contentType: 'image/jpeg',
               }).on('state_changed',
                   (progress) => {
-                    console.log(progress);
                   },
                   (error) => {
-                    console.debug(error);
                   },
                   (uploadedFile) => {
-                      console.debug(uploadedFile);
                       fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/events/${that.props.eventObj._id}`, {method: 'patch',
                         headers: {
                           'Accept': 'application/json, text/plain, */*',
@@ -102,10 +94,11 @@ export default class Event extends Component<{}> {
                         body: JSON.stringify({image: uploadedFile.downloadURL})})
                       .then(
                         response => response.json(),
-                        error => console.log('An error occured.', error)
                       )
                       .then(json => {
-                        console.log(json);
+                        this.setState({
+                          dataSource: this.state.ds.cloneWithRows(json.event.images)
+                        });
                       })
                   });
           }
@@ -113,7 +106,6 @@ export default class Event extends Component<{}> {
       }
 
       renderRow (image) {
-        console.log(image);
         return <View style={styles.card}>
            <Image style={{flex: 1}} source={{uri: image.url}}/>
          </View>
@@ -134,10 +126,12 @@ export default class Event extends Component<{}> {
       <Text style={styles.text}>{dispEndDate}</Text>
       </View>
       <ListView
+        style={{marginBottom: 50}}
         contentContainerStyle={styles.listView}
         dataSource={this.state.dataSource}
         renderRow={this.renderRow.bind(this)}
       />
+      <View style={{height: 50}} />
      </View>
     );
   }

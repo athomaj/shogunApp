@@ -52,6 +52,7 @@ export default class SignUp extends Component<{}> {
     error => console.log('An error occured.', error)
   )
   .then(json => {
+    console.log(json);
     try {
       AsyncStorage.setItem('@shogunStore:user', JSON.stringify(json.user));
     } catch (error) {

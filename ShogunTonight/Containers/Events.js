@@ -14,7 +14,8 @@ import {
   AppRegistry,
   ListView,
   TouchableOpacity,
-  AsyncStorage
+  AsyncStorage,
+  RefreshControl
 } from 'react-native';
 
 import { Actions } from 'react-native-router-flux';
@@ -26,7 +27,9 @@ export default class Events extends Component<{}> {
     const ds = new ListView.DataSource({rowHasChanged: (r1, r2) => r1 !== r2});
     this.state = {
       dataSource: ds.cloneWithRows([]),
-      ds: ds
+      ds: ds,
+      fromReload: false,
+      refreshing: false
     }
 
     try {
@@ -58,18 +61,85 @@ export default class Events extends Component<{}> {
 
   }
 
+  componenentWillUpdate() {
+  }
+
   _onPressButton() {
 
     }
 
     componentDidUpdate() {
+      try {
+        const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
+          if (result) {
+            const user = JSON.parse(result);
+            fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/events?userId=${user._id}`, {method: 'get',
+              headers: {
+                'Accept': 'application/json, text/plain, */*',
+                'Content-Type': 'application/json'
+              }})
+            .then(
+              response => response.json(),
+              error => console.log('An error occured.', error)
+            )
+            .then(json => {
+              console.log(this.state.dataSource);
+              if (this.state.fromReload === true) {
+                this.state.fromReload = false
+              } else {
+                this.state.dataSource = this.state.ds.cloneWithRows(json.events);
+                this.state.fromReload = true;
+                this.forceUpdate();
+              }
+            })
+          }
+      });
+      } catch (error) {
+        console.log(error);
+      }
     }
+
+    _onRefresh() {
+       this.setState({refreshing: true});
+
+       try {
+         const value = AsyncStorage.getItem('@shogunStore:user', (err, result) => {
+           if (result) {
+             const user = JSON.parse(result);
+             fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/events?userId=${user._id}`, {method: 'get',
+               headers: {
+                 'Accept': 'application/json, text/plain, */*',
+                 'Content-Type': 'application/json'
+               }})
+             .then(
+               response => response.json(),
+               error => console.log('An error occured.', error)
+             )
+             .then(json => {
+               console.log(this.state.dataSource);
+               this.setState({refreshing: false});
+               this.state.dataSource = this.state.ds.cloneWithRows(json.events);
+               this.state.fromReload = true;
+               this.forceUpdate();
+             })
+           }
+       });
+       } catch (error) {
+         console.log(error);
+       }
+     }
 
   render() {
     console.log('here');
     return (
       <View style={{flex: 1}}>
         <ListView
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this._onRefresh.bind(this)}
+            />
+          }
           dataSource={this.state.dataSource}
           renderRow={(rowData) => {return (
             <TouchableOpacity  style= {styles.container} onPress={() => Actions.event({eventObj: rowData, title: rowData.name})}>

@@ -35,12 +35,20 @@ const instructions = Platform.select({
 });
 
 export default class App extends Component<{}> {
+
+  onBack() {
+    Actions.pop();
+    setTimeout(() => {
+      Actions.refresh({name:'events'});
+      console.log("zzzz");
+    }, 10);
+  }
   render() {
     return (
       <Router>
        <Scene key="root">
          <Scene initial key="signup" component={SignUp}  hideNavBar/>
-         <Scene key="event" component={Event} title="Event"/>
+         <Scene key="event" component={Event} title="Event" onBack={() => this.onBack()} onLeft={() => Actions.pop({refresh: {key: 'events'}})}/>
          <Scene key="profile" component={Profile} title="Profile"/>
          <Scene key="events" component={Events} titleStyle={{alignSelf: 'center'}} title="Events" onRight={() => Actions.qrcode()} rightTitle={' Scan'} onLeft={() => Actions.profile()} leftTitle={'Profile '}/>
          <Scene key="qrcode" component={QrCode} title="Qr Code"/>
