@@ -19,6 +19,8 @@ import {
   Dimensions
 } from 'react-native';
 
+const uuidv1 = require('uuid/v1');
+
 import {Actions} from 'react-native-router-flux';
 import Spinner from 'react-native-loading-spinner-overlay';
 import {SERVER_IP, SERVER_PORT} from '../config/config.js'
@@ -84,7 +86,7 @@ export default class Profile extends Component<{}> {
              body.username = this.state.newUserName;
            }
            if (this.state.profileImgToUpdate == true) {
-             firebase.storage().ref('profileImages/' + this.state.profileImg.fileName).putFile(this.state.profileImg.uri, {
+             firebase.storage().ref('profileImages/' + uuidv1()).putFile(this.state.profileImg.uri, {
                  contentType: 'image/jpeg',
                }).on('state_changed',
                    (progress) => {

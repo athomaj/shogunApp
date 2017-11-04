@@ -15,6 +15,9 @@ import {
   Image
 } from 'react-native';
 
+const uuidv1 = require('uuid/v1');
+
+import {SERVER_IP, SERVER_PORT} from '../config/config.js'
 import { moment } from 'moment';
 import firebase from 'react-native-firebase';
 
@@ -45,10 +48,10 @@ export default class Event extends Component<{}> {
     }
     globalthis = this;
     this.onImageClicked = this.onImageClicked.bind(this)
+    console.log(this.props);
   }
 
   static renderRightButton = (props) => {
-console.log(props);
             return (
 
                 <TouchableOpacity onPress={() => globalthis.onImageClicked()}>
@@ -60,6 +63,7 @@ console.log(props);
       }
 
       onImageClicked() {
+        const that = this;
         ImagePicker.showImagePicker({maxWidth: 300, maxHeight: 600}, (response) => {
           console.log('Response = ', response);
 
@@ -75,7 +79,8 @@ console.log(props);
           else {
             let source = { uri: response.uri };
 
-            firebase.storage().ref('eventImages/' + response.fileName).putFile(response.uri, {
+            console.log(response);
+            firebase.storage().ref('eventImages/' + uuidv1()).putFile(response.uri, {
                 contentType: 'image/jpeg',
               }).on('state_changed',
                   (progress) => {
@@ -86,7 +91,19 @@ console.log(props);
                   },
                   (uploadedFile) => {
                       console.debug(uploadedFile);
-                      
+                      fetch(`http://${SERVER_IP}:${SERVER_PORT}/api/events/${that.props.eventObj._id}`, {method: 'patch',
+                        headers: {
+                          'Accept': 'application/json, text/plain, */*',
+                          'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({image: uploadedFile.downloadURL})})
+                      .then(
+                        response => response.json(),
+                        error => console.log('An error occured.', error)
+                      )
+                      .then(json => {
+                        console.log(json);
+                      })
                   });
           }
         });
