@@ -13,7 +13,8 @@ import {
   AppRegistry,
   Actions,
   TouchableOpacity,
-  Image
+  Image,
+  TextInput
 } from 'react-native';
 
 var ImagePicker = require('react-native-image-picker');
@@ -40,7 +41,7 @@ export default class Profile extends Component<{}> {
   constructor() {
     super();
     this.state = {
-      profileImg: null
+      profileImg: require('../img/new-user-image-default.png')
     };
   }
 
@@ -69,17 +70,54 @@ export default class Profile extends Component<{}> {
 
   render() {
     return (
-      <View>
-        <View style={{marginTop: 150, justifyContent: 'center', alignItems: 'center'}}>
+      <View style={{flex:1, backgroundColor: 'rgba(0,0,0,0.5)'}}>
+        <View style={{marginTop: 60, justifyContent: 'center', alignItems: 'center'}}>
         <TouchableOpacity onPress={this.onImageClicked.bind(this)}>
-          <Text>Photo</Text>
           {this.state.profileImg != null &&
-            <Image style={{width: 200, height: 200}} source={this.state.profileImg} />
+            <Image style={{borderRadius:75, width: 150, height: 150}} source={this.state.profileImg} />
           }
+         </TouchableOpacity>
+         <TextInput style = {styles.input}
+                        autoCapitalize="none"
+                       // onSubmitEditing={() => this.passwordInput.focus()}
+                        autoCorrect={false}
+                        returnKeyType="next"
+                        placeholder='Choose a username'
+                        placeholderTextColor='rgba(225,225,225,0.7)'/>
+        <TouchableOpacity style={styles.buttonContainer}
+                       onPress={this._onPressButton}>
+                       <Text  style={styles.buttonText}>Save</Text>
          </TouchableOpacity>
         </View>
      </View>
     );
   }
 }
+
+const styles = StyleSheet.create({
+    container: {
+     padding: 20
+    },
+    input:{
+        height: 40,
+      backgroundColor: 'white',
+        marginBottom: 10,
+        padding: 10,
+        marginTop:25,
+        backgroundColor: 'rgba(225,225,225,0.2)',
+        color: '#fff'
+    },
+    buttonContainer:{
+       backgroundColor: '#2980b6',
+       paddingVertical: 10,
+       marginBottom: 10,
+       padding: 70,
+       marginTop: 20
+   },
+   buttonText:{
+       color: '#fff',
+       textAlign: 'center',
+       fontWeight: '700'
+   }
+  });
 AppRegistry.registerComponent('Profile', () => Profile);
