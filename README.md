@@ -32,6 +32,7 @@ To install the app on IOS, clone the repository, go into the ios folder and type
 
 Once the app is installed, you will be able to login by entering a username. This login will create an user on the backend that will be stored locally. You will never have to reconnect.
 The first screen is the events screen. To add an event, press the scan button on the navbar, and go to http://34.238.153.180:3000/event to get one of the qrcode.
+You can create events my login to the backend at http://34.238.153.180:3000/keystone with julien@shogun.com, pwd: admin.
 Now you have an event in the list, you can tap on the cell and see the description of the event. You will then see the pictures people sent and you will be able to submit as many as you want.
 You also have a profile screen to change your username and your profile picture.
 
